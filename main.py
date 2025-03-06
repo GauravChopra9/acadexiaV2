@@ -62,93 +62,93 @@ async def main():
         slides_search_bar = st.text_input("Find me slides about...")
 
         # Handle new search query
-        if slides_search_bar and slides_search_bar != st.session_state.slides_query:
-            st.session_state.slides_query = slides_search_bar
-            with st.spinner("Searching for slides..."):
-                try:
-                    response = await fetch_slides(slides_search_bar)
-                    st.session_state.ppts, st.session_state.ppt_titles, st.session_state.page_nums_list, st.session_state.ppt_explanations_list = response
-                    # Initialize current pages for new search
-                    st.session_state.current_pages = {
-                        idx: st.session_state.page_nums_list[idx][0]
-                        for idx in range(len(st.session_state.ppts))
-                    }
-                except Exception as e:
-                    st.error(f"An error occurred: {e}")
-                    return
+        # if slides_search_bar and slides_search_bar != st.session_state.slides_query:
+        #     st.session_state.slides_query = slides_search_bar
+        #     with st.spinner("Searching for slides..."):
+        #         try:
+        #             response = await fetch_slides(slides_search_bar)
+        #             st.session_state.ppts, st.session_state.ppt_titles, st.session_state.page_nums_list, st.session_state.ppt_explanations_list = response
+        #             # Initialize current pages for new search
+        #             st.session_state.current_pages = {
+        #                 idx: st.session_state.page_nums_list[idx][0]
+        #                 for idx in range(len(st.session_state.ppts))
+        #             }
+        #         except Exception as e:
+        #             st.error(f"An error occurred: {e}")
+        #             return
 
-        if st.session_state.ppts:
-            st.success(f"Found {len(st.session_state.ppts)} presentations!")
+        # if st.session_state.ppts:
+        #     st.success(f"Found {len(st.session_state.ppts)} presentations!")
             
-            for idx, (ppt, title) in enumerate(zip(st.session_state.ppts, st.session_state.ppt_titles)):
-                with st.expander(title):
-                    if ppt:
-                        col1, col2 = st.columns([2, 1])
+        #     for idx, (ppt, title) in enumerate(zip(st.session_state.ppts, st.session_state.ppt_titles)):
+        #         with st.expander(title):
+        #             if ppt:
+        #                 col1, col2 = st.columns([2, 1])
                         
-                        with col1:
-                            current_page = st.session_state.current_pages[idx]
+        #                 with col1:
+        #                     current_page = st.session_state.current_pages[idx]
                             
-                            # Create a unique container for each PDF
-                            pdf_container = st.empty()
+        #                     # Create a unique container for each PDF
+        #                     pdf_container = st.empty()
                             
-                            try:
-                                pdf_container.markdown(
-                                    f"""
-                                    <div style="width: 100%; height: 800px; overflow: hidden;">
-                                        <iframe 
-                                            src="data:application/pdf;base64,{ppt}#page={current_page}"
-                                            width="100%" 
-                                            height="100%" 
-                                            style="border: none;"
-                                            allow="fullscreen"
-                                        ></iframe>
-                                    </div>
-                                    """,
-                                    unsafe_allow_html=True
-                                )
-                            except Exception as e:
-                                st.error(f"Error rendering PDF: {e}")
+        #                     try:
+        #                         pdf_container.markdown(
+        #                             f"""
+        #                             <div style="width: 100%; height: 800px; overflow: hidden;">
+        #                                 <iframe 
+        #                                     src="data:application/pdf;base64,{ppt}#page={current_page}"
+        #                                     width="100%" 
+        #                                     height="100%" 
+        #                                     style="border: none;"
+        #                                     allow="fullscreen"
+        #                                 ></iframe>
+        #                             </div>
+        #                             """,
+        #                             unsafe_allow_html=True
+        #                         )
+        #                     except Exception as e:
+        #                         st.error(f"Error rendering PDF: {e}")
                         
-                        with col2:
-                            st.write("### Navigation")
+        #                 with col2:
+        #                     st.write("### Navigation")
                             
-                            # Get page information
-                            pages = st.session_state.page_nums_list[idx]
-                            explanations = st.session_state.ppt_explanations_list[idx]
-                            current_index = pages.index(current_page)
+        #                     # Get page information
+        #                     pages = st.session_state.page_nums_list[idx]
+        #                     explanations = st.session_state.ppt_explanations_list[idx]
+        #                     current_index = pages.index(current_page)
                             
-                            # Navigation controls
-                            cols = st.columns(3)
+        #                     # Navigation controls
+        #                     cols = st.columns(3)
                             
-                            # Previous button
-                            if cols[0].button("← Prev", key=f"prev_{idx}", 
-                                            disabled=current_index == 0):
-                                st.session_state.current_pages[idx] = pages[current_index - 1]
-                                st.session_state.pdf_key += 1
-                                st.rerun()
+        #                     # Previous button
+        #                     if cols[0].button("← Prev", key=f"prev_{idx}", 
+        #                                     disabled=current_index == 0):
+        #                         st.session_state.current_pages[idx] = pages[current_index - 1]
+        #                         st.session_state.pdf_key += 1
+        #                         st.rerun()
                             
-                            # Page selector
-                            selected_page = cols[1].selectbox(
-                                "Page",
-                                pages,
-                                index=current_index,
-                                key=f"page_select_{idx}"
-                            )
+        #                     # Page selector
+        #                     selected_page = cols[1].selectbox(
+        #                         "Page",
+        #                         pages,
+        #                         index=current_index,
+        #                         key=f"page_select_{idx}"
+        #                     )
                             
-                            if selected_page != current_page:
-                                st.session_state.current_pages[idx] = selected_page
-                                st.session_state.pdf_key += 1
-                                st.rerun()
+        #                     if selected_page != current_page:
+        #                         st.session_state.current_pages[idx] = selected_page
+        #                         st.session_state.pdf_key += 1
+        #                         st.rerun()
                             
-                            # Next button
-                            if cols[2].button("Next →", key=f"next_{idx}", 
-                                            disabled=current_index == len(pages) - 1):
-                                st.session_state.current_pages[idx] = pages[current_index + 1]
-                                st.session_state.pdf_key += 1
-                                st.rerun()
+        #                     # Next button
+        #                     if cols[2].button("Next →", key=f"next_{idx}", 
+        #                                     disabled=current_index == len(pages) - 1):
+        #                         st.session_state.current_pages[idx] = pages[current_index + 1]
+        #                         st.session_state.pdf_key += 1
+        #                         st.rerun()
                             
-                            st.write("### Explanation")
-                            st.write(explanations[current_index])
+        #                     st.write("### Explanation")
+        #                     st.write(explanations[current_index])
 
 if __name__ == "__main__":
     asyncio.run(main())
