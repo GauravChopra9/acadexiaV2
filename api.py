@@ -1,9 +1,9 @@
 import aiohttp
-import io
-from dotenv import load_dotenv
-import os
-import boto3
-import base64
+#import io
+#from dotenv import load_dotenv
+#import os
+#import boto3
+#import base64
 
 load_dotenv()
 
