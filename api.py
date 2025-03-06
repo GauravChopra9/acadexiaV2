@@ -5,7 +5,7 @@ import aiohttp
 #import boto3
 #import base64
 
-load_dotenv()
+#load_dotenv()
 
 async def fetch_clips(query: str):
     async with aiohttp.ClientSession() as session:
