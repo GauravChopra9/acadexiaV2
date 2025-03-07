@@ -4,7 +4,10 @@ import aiohttp
 
 async def fetch_data(query: str):
     async with aiohttp.ClientSession() as session:
-        async with session.get("http://127.0.0.1:8000/", params={"query": query}) as response:
+        async with session.get(
+            "http://104.131.190.193:8000/search_clips",
+            params={"query": query},
+        ) as response:
             return await response.json()
 
 async def main():
