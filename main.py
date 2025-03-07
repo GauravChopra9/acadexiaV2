@@ -1,6 +1,6 @@
 import streamlit as st
 import asyncio
-from api import fetch_clips, fetch_slides
+from api import fetch_clips
 
 async def main():
     tab1, tab2 = st.tabs(["Lecture Clip Search 🎥", "PowerPoint Search 🎒"])
